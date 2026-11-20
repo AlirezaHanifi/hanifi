@@ -1,0 +1,18 @@
+# Build output (regenerable)
+/build/
+node_modules/
+dist/
+.astro/
+.DS_Store
+.env
+# Copied in at build time from build/
+site/public/alireza-hanifi-resume-en.pdf
+
+# Local only: the original photos and the scripts that turn them into the site's images.
+# Only the finished images (site/public/) are tracked.
+/assets/photos/originals/
+/scripts/
+
+# Agent tooling: local settings stay out; .claude/CLAUDE.md (points to .agents/) is tracked.
+/.claude/*
+!/.claude/CLAUDE.md

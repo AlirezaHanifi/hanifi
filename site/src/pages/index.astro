@@ -1,0 +1,306 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../layouts/Base.astro';
+import { profile, asset, rich, dateRange, year, lineage, current, host, timeline, duration, yearsInData } from '../lib/profile';
+
+const { basics, personal } = profile;
+const now = current();
+const steps = lineage();
+const tl = timeline();
+const cinema = personal.interests[0];
+const cover = personal.cover;
+const edu = profile.education[0];
+const firstYear = year(steps[0].start);
+
+// Portrait (built by scripts/make-portrait.swift); the monogram is the fallback.
+const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', 'portrait.webp'));
+const initials = basics.name
+  .split(' ')
+  .map((w) => w[0])
+  .join('');
+
+const nav = [
+  ['about', 'About'],
+  ['experience', 'Experience'],
+  ['toolbox', 'Toolbox'],
+  ['off-the-clock', 'Off the clock'],
+  ['contact', 'Contact'],
+];
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Base>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="#top">{basics.name}</a>
+      <nav class="nav mono" aria-label="Sections">
+        {
+          nav.map(([id, label], i) => (
+            <a href={`#${id}`}>
+              <b>{pad(i + 1)}.</b> {label}
+            </a>
+          ))
+        }
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Toggle light and dark theme" data-theme-toggle>
+        <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path></svg>
+        <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <!-- Hero: a framed sheet -->
+    <section class="hero" id="top" aria-labelledby="name">
+      <div class="hero-grid">
+        <div class="hero-main">
+          <p class="eyebrow mono">{basics.headline}</p>
+          <h1 id="name">{basics.name}</h1>
+          <span class="name-fa" lang="fa" dir="rtl">{basics.name_fa}</span>
+          <p class="statement" set:html={rich(basics.statement).replace(/strong>/g, 'em>')} />
+          <p class="lede">{basics.intro}</p>
+          <div class="actions">
+            <a class="btn solid" href="#contact">Get in touch</a>
+            <a class="btn" href={asset('/alireza-hanifi-resume-en.pdf')} download="alireza-hanifi-resume-en.pdf">Résumé · PDF ↓</a>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <figure class="portrait">
+            {
+              hasPhoto ? (
+                <img src={asset('/portrait.webp')} alt={`Portrait of ${basics.name}`} width="879" height="1100" fetchpriority="high" />
+              ) : (
+                <div class="monogram" aria-hidden="true">
+                  <div>
+                    <span>{initials}</span>
+                    <small lang="fa">{basics.name_fa}</small>
+                  </div>
+                </div>
+              )
+            }
+          </figure>
+          <dl class="meta mono">
+            <dt>role</dt><dd>{now.title}</dd>
+            <dt>at</dt><dd>{now.company}</dd>
+            <dt>focus</dt><dd>{basics.tagline}</dd>
+            <dt>speaks</dt><dd>{profile.languages.map((l) => l.language).join(', ')}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="strip mono">
+        <div>based in <strong>{basics.location}</strong></div>
+        <div><span class="dot" aria-hidden="true"></span>now at <strong>{now.company}</strong></div>
+        <div>in data since <strong>{firstYear}</strong></div>
+      </div>
+    </section>
+
+    <!-- 01 About -->
+    <section class="section" id="about" aria-labelledby="about-h">
+      <div class="section-head"><h2 id="about-h"><span class="num mono">01.</span> About</h2></div>
+      <div class="about">
+        <div>
+          <p class="first">{basics.summary}</p>
+          <p>{personal.intro}</p>
+          <ul class="traits mono" aria-label="Traits">
+            {personal.traits.map((t) => <li>{t}</li>)}
+          </ul>
+        </div>
+        <figure class="glance">
+          <figcaption class="mono">at a glance · approx.</figcaption>
+          <dl>
+            {
+              basics.glance.map((g) => (
+                <div>
+                  <dt>{g.value}</dt>
+                  <dd>{g.label}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 02 Experience -->
+    <section class="section" id="experience" aria-labelledby="exp-h">
+      <div class="section-head">
+        <h2 id="exp-h"><span class="num mono">02.</span> Experience</h2>
+        <span class="note mono">{yearsInData()}+ years · {tl.companies.length} companies · {steps.length} roles</span>
+      </div>
+
+      <figure class="timeline">
+        <figcaption class="mono">career path · oldest first · bar length = time in role</figcaption>
+        <ol class="tl" style={`--months:${tl.months}`}>
+          {
+            tl.companies.map((c) => (
+              <li class="tl-co" style={`grid-column:${c.from} / ${c.to}`}>
+                <a class="tl-name" href={c.url ?? undefined}>
+                  {c.logo && <span class="logo"><img src={asset(c.logo)} alt="" width="22" height="22" loading="lazy" /></span>}
+                  <span>{c.company}</span>
+                </a>
+                <ol class="tl-roles" style={`--cols:${c.span}`}>
+                  {c.roles.map((r) => (
+                    <li class={r.now ? 'now' : ''} style={`grid-column:${r.from} / ${r.to}`}>
+                      <span class="t">{r.title}</span>
+                      <span class="d mono">
+                        <span class="dates">{r.dates} · </span>
+                        {duration(r.months)}{r.now && ' · now'}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </li>
+            ))
+          }
+        </ol>
+        <div class="tl-axis mono" aria-hidden="true">
+          <span style="left:0">{tl.firstYear}</span>
+          {tl.years.map((y) => <span style={`left:${y.pct}%`}>{y.year}</span>)}
+        </div>
+      </figure>
+
+      {
+        profile.work.map((job) => {
+          const first = job.roles[job.roles.length - 1];
+          const last = job.roles[0];
+          return (
+            <article class="job">
+              <div class="job-years">
+                {year(first.start)}–{last.end ? year(last.end) : 'now'}
+              </div>
+              <div>
+                <h3>
+                  {job.logo && <span class="logo"><img src={asset(job.logo)} alt="" width="22" height="22" loading="lazy" /></span>}
+                  {job.url ? <a href={job.url}>{job.company} <span class="ext" aria-hidden="true">↗</span></a> : job.company}
+                  <span class="mono muted"> · {job.location}</span>
+                </h3>
+                {job.roles.map((role) => (
+                  <div class="role">
+                    <div class="role-head">
+                      <span class="role-title">{role.title}</span>
+                      <span class="mono muted">{dateRange(role.start, role.end)}</span>
+                    </div>
+                    <ul>
+                      {role.highlights.map((h) => (
+                        <li set:html={rich(h)} />
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </article>
+          );
+        })
+      }
+      <p class="edu mono">
+        <span>{edu.degree} · {edu.institution}</span>
+        <span>{year(edu.start)}–{year(edu.end)}</span>
+      </p>
+    </section>
+
+    <!-- 03 Toolbox -->
+    <section class="section" id="toolbox" aria-labelledby="tools-h">
+      <div class="section-head"><h2 id="tools-h"><span class="num mono">03.</span> Toolbox</h2></div>
+      <figure class="schema" aria-labelledby="tools-h">
+        <figcaption class="mono">select area, tools from skills; — {profile.skills.length} rows</figcaption>
+        <table class="mono">
+          <thead><tr><th scope="col">area</th><th scope="col">tools</th></tr></thead>
+          <tbody>
+            {
+              profile.skills.map((s) => (
+                <tr>
+                  <td>{s.name.toLowerCase()}</td>
+                  <td>{s.keywords.join(', ')}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </figure>
+    </section>
+
+    <!-- 04 Off the clock: a mock magazine cover and its contents page -->
+    <section class="section" id="off-the-clock" aria-labelledby="life-h">
+      <div class="section-head"><h2 id="life-h"><span class="num mono">04.</span> Off the clock</h2></div>
+      <div class="otc">
+        <figure class="cover">
+          <img class="cover-bg" src={asset(cover.image)} alt={cover.alt} width="900" height="1190" loading="lazy" />
+          <p class="masthead" aria-hidden="true">{cover.masthead}</p>
+          <img class="cover-fg" src={asset(cover.figure)} alt="" width="900" height="1190" loading="lazy" />
+          <p class="issue">{cover.issue}</p>
+          <div class="cover-text">
+            <p class="cover-kicker">{cover.kicker}</p>
+            <p class="cover-lead">{cover.lead}</p>
+            <ul class="cover-lines">
+              {cover.lines.map((l) => <li><b>{l.head}</b> <span>{l.deck}</span></li>)}
+            </ul>
+          </div>
+          <p class="barcode" aria-hidden="true">{host(basics.website)}</p>
+          <figcaption class="sr-only">A mock magazine cover, for fun.</figcaption>
+        </figure>
+
+        <div class="otc-side">
+          <p class="mono contents-h">In this issue</p>
+          <ol class="contents">
+            {
+              personal.interests.map((i, n) => (
+                <li>
+                  <span class="pg mono">{pad(8 + n * 13)}</span>
+                  <div>
+                    <h3>{i.name}</h3>
+                    <p>{i.note}</p>
+                    {i.favorites && (
+                      <ol class="favorites" aria-label="All-time favourites">
+                        {i.favorites.map((f) => (
+                          <li>{f}</li>
+                        ))}
+                      </ol>
+                    )}
+                    {i.url && <a class="more mono" href={i.url}>{host(i.url)} ↗</a>}
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 Contact -->
+    <section class="section contact" id="contact" aria-labelledby="contact-h">
+      <p class="mono" style="color: var(--accent)">05. Contact</p>
+      <h2 class="big" id="contact-h">Let’s talk.</h2>
+      <p>Questions about data platforms, analytics engineering or a good film: my inbox is open.</p>
+      <a class="email" href={`mailto:${basics.email}`}>{basics.email}</a>
+      <ul class="links mono">
+        {basics.profiles.map((p) => <li><a href={p.url}>{p.network} ↗</a></li>)}
+        {cinema.url && <li><a href={cinema.url}>Letterboxd ↗</a></li>}
+        <li><a href={asset('/alireza-hanifi-resume-en.pdf')} download="alireza-hanifi-resume-en.pdf">Résumé PDF ↓</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer mono">
+    <div class="wrap">
+      <span>© {new Date().getFullYear()} {basics.name} · <span class="fa" lang="fa">{basics.name_fa}</span></span>
+      <span>For agents: <a href={asset('/llms.txt')}>llms.txt</a> · <a href={asset('/resume.json')}>resume.json</a></span>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle: remembers an explicit choice; otherwise the OS decides.
+    const root = document.documentElement;
+    document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+      const dark = root.dataset.theme
+        ? root.dataset.theme === 'dark'
+        : matchMedia('(prefers-color-scheme: dark)').matches;
+      root.dataset.theme = dark ? 'light' : 'dark';
+      try {
+        localStorage.setItem('theme', root.dataset.theme);
+      } catch {}
+    });
+  </script>
+</Base>

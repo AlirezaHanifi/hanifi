@@ -1,0 +1,186 @@
+# Single source of truth for the résumé (resume/resume.typ) and the website (site/).
+# Edit facts here, never in the templates. Field reference: .agents/AGENTS.md → "Content model".
+#
+# Inline markup allowed in text fields: **bold** only. Keep it plain otherwise so both
+# Typst and the website can render it.
+
+basics:
+  name: Alireza Hanifi
+  name_fa: علیرضا حنیفی     # shown on the website next to the English name
+  headline: Analytics Team Lead
+  tagline: Data Platform & Analytics Engineering
+  location: Tehran, Iran
+  email: alrzhanifi@gmail.com
+  phone: "+98 938 338 5818"   # résumé only; never rendered on the website
+  website: https://alirezahanifi.github.io/hanifi/
+  # Website hero. **bold** in the statement is rendered as the accent word.
+  statement: I build data platforms and analytics that people can **trust**.
+  intro: >-
+    Analytics Team Lead at Bankino in Tehran. Data in finance is the work I enjoy most. I came to
+    data through BI, and I still start every project from the decision someone needs to make.
+  # Website "at a glance" card. Approximate on purpose; refresh now and then.
+  glance:
+    - value: "4+"
+      label: years in data, all of them in finance
+    - value: "500+"
+      label: source tables modeled in a medallion warehouse
+    - value: "50+"
+      label: dashboards designed and maintained
+    - value: "~7 mo"
+      label: from design review to a platform in production
+  profiles:
+    - network: LinkedIn
+      username: Alireza-Hanifi
+      url: https://www.linkedin.com/in/Alireza-Hanifi
+    - network: GitHub
+      username: AlirezaHanifi
+      url: https://github.com/AlirezaHanifi
+  summary: >-
+    Analytics Team Lead at Bankino. I joined as the company's first data hire and was one of the
+    people who built its data platform from scratch; the architecture design and implementation
+    were mine. I started in BI, so I begin with the decision a stakeholder has to make and work
+    back to the pipelines and models, with enough governance that people can trust the numbers.
+    I care most about delivery, and I judge my work by whether it ships and people use it.
+
+# One entry per employer; roles are newest first. `logo` is a file in site/public/logos/
+# (the company's own mark, website only).
+work:
+  - company: Bankino
+    url: https://bankino.digital/
+    logo: /logos/bankino.svg
+    location: Tehran, Iran
+    roles:
+      - title: Analytics Team Lead
+        start: 2026-02
+        end: null          # null = present
+        highlights:
+          - Lead the Analytics Engineering team, which owns the transformation layer (dbt on ClickHouse) and the analytics roadmap. Set up code review and quarterly planning, and keep the team on work that stakeholders use.
+          - Was one of the core builders of Bankino's data platform and owned its architecture design and implementation, from design and security review to production in about seven months. It loads Oracle core banking data with dlt into MinIO and then ClickHouse, runs on Airflow on Kubernetes, and sits behind chproxy, Traefik and Authentik single sign-on.
+          - "Designed the medallion (Bronze/Silver/Gold) warehouse behind Bankino's analytics: 500+ source tables from 30+ schemas, 400+ generated staging models and about 10 Silver areas, each owned by a business domain. A catalog records who owns each table, and ingestion applies a column-level PII policy (hash, mask or exclude)."
+          - Leading the move of old Metabase dashboards to a new, governed instance and a 360° customer view. Wrote the team's SQL and dashboard guidelines, and led the customer demographics analysis for Marketing.
+      - title: Data Engineer
+        start: 2024-09
+        end: 2026-02
+        highlights:
+          - Joined as Bankino's first data person and learned the company's data and needs from the ground up. Started with a deliberately simple stack, Airflow jobs that read from Oracle and wrote back to Oracle, with Superset and Metabase for dashboards.
+          - Handled every data request from the business end to end, writing ETL where it was needed and delivering the dashboards, analyses and ad hoc answers.
+          - Segmented customers by recency, frequency and monetary value (RFM); Marketing used the segments for targeted campaigns.
+          - Owned the data side of Bankino's Year in Review, a personal recap of the Persian year 1403 (2024–25) for each customer, from defining the metrics to preparing the data. Also worked on the product side, deciding what each customer sees and how the slides tell their story; there were 3,600+ possible story combinations.
+
+  - company: blu Bank
+    url: https://blubank.com/
+    logo: /logos/blu.svg
+    location: Tehran, Iran
+    roles:
+      - title: Business Intelligence Developer
+        start: 2024-01
+        end: 2024-08
+        highlights:
+          - Built and improved Airflow pipelines (20+ DAGs, 40+ tables) and a star schema that made analysis faster.
+          - Tuned PostgreSQL indexes and storage, which cut table sizes by up to 80% and query times by up to 50%.
+          - Built Metabase dashboards and defined the main metrics for the Box and PFM features; nearly 100% of new users adopted them within 3 months.
+          - Checked marketing campaigns before launch, monitored them while they ran and analyzed them afterward; the round-up campaign lifted deposits by 2%.
+
+  - company: Mofid Securities
+    url: https://www.emofid.com/
+    logo: /logos/mofid.svg
+    location: Tehran, Iran
+    roles:
+      - title: Business Intelligence Analyst
+        start: 2022-07
+        end: 2023-12
+        highlights:
+          - Rebuilt data models and validation logic, which saved up to 2 hours of manual work a day.
+          - Designed and maintained 50+ dashboards in Tableau and Grafana.
+          - Worked with teams across the company to define what data they needed and to read the results.
+
+education:
+  - institution: Isfahan University of Technology
+    url: https://english.iut.ac.ir/
+    location: Isfahan, Iran
+    degree: B.Sc. in Mechanical Engineering
+    start: 2015-09
+    end: 2020-02
+
+skills:
+  - name: Leadership
+    keywords: [Leading an analytics team, roadmapping, delivery, stakeholder management, code review]
+  - name: Programming
+    keywords: [Python (FastAPI, Pandas, Polars, NumPy), SQL, Bash]
+  - name: Data Platform
+    keywords: [ClickHouse, Airflow, dbt, dlt, MinIO, Oracle, PostgreSQL, Kafka/Redpanda, MongoDB]
+  - name: Infrastructure
+    keywords: [Kubernetes, Docker, Traefik, chproxy, Authentik, GitLab CI, Git]
+  - name: Data Practice
+    keywords: [Medallion architecture, dimensional modeling, data governance, PII handling, performance tuning]
+  - name: BI and ML
+    keywords: [Metabase, Superset, Tableau, Grafana, JupyterHub, MLflow, LLM agents]
+
+languages:
+  - language: English
+    fluency: Fluent
+  - language: Persian
+    fluency: Native
+
+certificates:
+  - name: Data Engineering Bootcamp
+    issuer: Rahnema College
+    url: https://rahnemacollege.com/certificate/alrzhanifieZtMWLGxcNT5eQ
+  - name: Introduction to Data Engineering (Joe Reis)
+    issuer: Coursera
+    url: https://www.coursera.org/account/accomplishments/verify/CB9QBZITDJEQ
+  - name: Deep Learning Specialization (Andrew Ng)
+    issuer: Coursera
+    url: https://www.coursera.org/account/accomplishments/specialization/EN3BD5D7X97H
+  - name: Machine Learning with Python (Jadi)
+    issuer: Maktabkhooneh
+    url: https://maktabkhooneh.org/certificates/MK-KVBCQB/
+  - name: Digital Product Management
+    issuer: Bozhan
+    url: null
+
+# The human side, website only (the résumé ignores this block).
+# Figures are approximate on purpose; refresh them now and then.
+personal:
+  traits: [Patient, Calm under pressure, Dedicated, Ambitious]
+  intro: >-
+    People describe me as patient and hard to rattle. I put everything into my work, and I want
+    to keep getting better at it. Off the clock, I am usually watching a film,
+    reading, listening to music, at the gym or making a latte.
+  interests:
+    - name: Cinema
+      note: 1,200+ films logged since 2018, and a tough grader (average 2.4 out of 5).
+      url: https://letterboxd.com/A_Hanifi/
+      favorites: [Vertigo, The Man Who Shot Liberty Valance, Rio Bravo, Cries and Whispers, Irma la Douce]
+    - name: Literature
+      note: Devoted to the Russian classics, above all Chekhov's short stories and Dostoevsky's novels.
+      url: null
+    - name: Music
+      note: From jazz and classical to old-school hip-hop, metal and Persian indie.
+      url: null
+    - name: Training
+      note: Bodybuilding; the gym is where I think least and recover most.
+      url: null
+    - name: Coffee
+      note: Making (and drinking) a good latte is a daily ritual.
+      url: null
+  # Website "Off the clock": a mock magazine cover beside an "In this issue" contents list (the
+  # interests above). Light-hearted on purpose. The photo is real (see .agents/AGENTS.md → "Portrait and
+  # photos"). `image` is the full photo with the old cover text removed; `figure` is the person
+  # alone (top band), stacked above the masthead so the head overlaps it. Both are built by
+  # scripts/make-cover.swift.
+  cover:
+    masthead: Hanifi
+    issue: "No. 04 · Tehran edition"
+    image: /photos/cover-bg.webp
+    figure: /photos/cover-fg.webp
+    alt: Alireza lounging sideways in an armchair, one hand behind his head, smiling
+    kicker: The after-hours issue
+    lead: Made in Tehran.
+    lines:
+      - head: "1,200+ films"
+        deck: "Avg. 2.4★. The toughest critic in town?"
+      - head: "Chekhov or Dostoevsky?"
+        deck: "Both, obviously."
+      - head: "Jazz to metal"
+        deck: "One playlist, no skips."
